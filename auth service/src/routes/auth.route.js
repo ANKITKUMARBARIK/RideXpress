@@ -9,6 +9,7 @@ import {
     forgetUserPassword,
     resetUserPassword,
     refreshAccessToken,
+    logoutUser,
 } from "../controllers/auth.controller.js";
 import validate from "../middlewares/validate.middleware.js";
 import {
@@ -20,6 +21,7 @@ import {
     resetUserPasswordSchema,
 } from "../validations/auth.validation.js";
 import upload from "../middlewares/multer.middleware.js";
+import verifyAuthentication from "../middlewares/authentication.middleware.js";
 
 const router = Router();
 
@@ -55,5 +57,7 @@ router
     .post(validate(resetUserPasswordSchema), resetUserPassword);
 
 router.route("/refresh-token").post(refreshAccessToken);
+
+router.route("/logout").post(verifyAuthentication, logoutUser);
 
 export default router;
