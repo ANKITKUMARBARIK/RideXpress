@@ -4,6 +4,8 @@ import {
     verifyOtpSignup,
     resendOtpSignup,
     loginUser,
+    googleOAuthLogin,
+    githubOAuthLogin,
 } from "../controllers/auth.controller.js";
 import validate from "../middlewares/validate.middleware.js";
 import {
@@ -34,5 +36,9 @@ router
     .post(validate(resendOtpSignupSchema), resendOtpSignup);
 
 router.route("/login").post(validate(loginUserSchema), loginUser);
+
+router.route("/google").post(googleOAuthLogin);
+
+router.route("/github").post(githubOAuthLogin);
 
 export default router;
