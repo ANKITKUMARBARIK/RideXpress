@@ -8,6 +8,7 @@ import {
     githubOAuthLogin,
     forgetUserPassword,
     resetUserPassword,
+    refreshAccessToken,
 } from "../controllers/auth.controller.js";
 import validate from "../middlewares/validate.middleware.js";
 import {
@@ -52,5 +53,7 @@ router
 router
     .route("/reset-password/:token")
     .post(validate(resetUserPasswordSchema), resetUserPassword);
+
+router.route("/refresh-token").post(refreshAccessToken);
 
 export default router;
