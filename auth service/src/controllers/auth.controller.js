@@ -6,8 +6,10 @@ import {
     deleteFromCloudinary,
 } from "../services/cloudinary.service.js";
 import generateSignupOtp from "../utils/generateSignupOtp.util.js";
-import { sanitizeUser } from "../utils/auth.util.js";
+import { sanitizeUser, setAuthCookies } from "../utils/auth.util.js";
 import verifySignupMail from "../services/verifySignupMail.service.js";
+import welcomeSignupMail from "../services/welcomeSignupMail.service.js";
+import generateAccessAndRefreshToken from "../services/token.service.js";
 import User from "../models/user.model.js";
 
 export const registerUser = asyncHandler(async (req, res) => {
@@ -91,6 +93,41 @@ export const registerUser = asyncHandler(async (req, res) => {
                 201,
                 createdUser,
                 "user registered successfully....Please verify OTP !"
+            )
+        );
+});
+
+export const verifyOtpSignup = asyncHandler(async (req, res) => {
+    const { otpSignup } = req.body;
+
+    const existedUser = await User.findOneAndUpdate(
+        { otpSignup, otpSignupExpiry: { $gt: new Date() } },
+        {
+            $unset: { otpSignup: 1, otpSignupExpiry: 1 },
+            $set: { isVerified: true },
+        },
+        { new: true }
+    );
+    if (!existedUser) throw new ApiError(400, "invalid or expired otp");
+
+    await welcomeSignupMail(existedUser.fullName, existedUser.email);
+
+    const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
+        existedUser._id
+    );
+
+    const user = await sanitizeUser(existedUser._id);
+    if (!user) throw new ApiError(404, "user not found");
+
+    setAuthCookies(res, accessToken, refreshToken);
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200,
+                { user, accessToken, refreshToken },
+                "OTP verified & user logged in"
             )
         );
 });

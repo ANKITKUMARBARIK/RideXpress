@@ -21,3 +21,14 @@ export const registerUserSchema = Joi.object({
         "string.empty": `"timezone" is required`,
     }),
 });
+
+export const verifyOtpSignupSchema = Joi.object({
+    otpSignup: Joi.string()
+        .pattern(/^\d{6}$/)
+        .required()
+        .messages({
+            "string.pattern.base": `"otpSignup" must be a 6-digit number`,
+            "string.empty": `"otpSignup" is required`,
+            "any.required": `"otpSignup" is required`,
+        }),
+});

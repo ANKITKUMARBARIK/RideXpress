@@ -1,7 +1,13 @@
 import { Router } from "express";
-import { registerUser } from "../controllers/auth.controller.js";
+import {
+    registerUser,
+    verifyOtpSignup,
+} from "../controllers/auth.controller.js";
 import validate from "../middlewares/validate.middleware.js";
-import { registerUserSchema } from "../validations/auth.validation.js";
+import {
+    registerUserSchema,
+    verifyOtpSignupSchema,
+} from "../validations/auth.validation.js";
 import upload from "../middlewares/multer.middleware.js";
 
 const router = Router();
@@ -14,5 +20,9 @@ router.route("/register").post(
     validate(registerUserSchema),
     registerUser
 );
+
+router
+    .route("/verify-signup")
+    .post(validate(verifyOtpSignupSchema), verifyOtpSignup);
 
 export default router;
