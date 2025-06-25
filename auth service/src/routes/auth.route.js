@@ -3,12 +3,14 @@ import {
     registerUser,
     verifyOtpSignup,
     resendOtpSignup,
+    loginUser,
 } from "../controllers/auth.controller.js";
 import validate from "../middlewares/validate.middleware.js";
 import {
     registerUserSchema,
     verifyOtpSignupSchema,
     resendOtpSignupSchema,
+    loginUserSchema,
 } from "../validations/auth.validation.js";
 import upload from "../middlewares/multer.middleware.js";
 
@@ -30,5 +32,7 @@ router
 router
     .route("/resend-signup")
     .post(validate(resendOtpSignupSchema), resendOtpSignup);
+
+router.route("/login").post(validate(loginUserSchema), loginUser);
 
 export default router;

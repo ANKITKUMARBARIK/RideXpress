@@ -171,3 +171,66 @@ export const resendOtpSignup = asyncHandler(async (req, res) => {
         .status(200)
         .json(new ApiResponse(200, "OTP resent successfully"));
 });
+
+export const loginUser = asyncHandler(async (req, res) => {
+    const { username, email, password } = req.body;
+
+    const existedUser = await User.findOne({
+        $and: [{ username }, { email }],
+    });
+    if (!existedUser) throw new ApiError(404, "user does not exists");
+
+    const isPasswordValid = await existedUser.comparePassword(password);
+    if (!isPasswordValid) throw new ApiError(401, "invalid user credentials");
+
+    if (!existedUser.isVerified) {
+        const isOtpExpired =
+            !existedUser.otpSignupExpiry ||
+            existedUser.otpSignupExpiry < new Date();
+        if (isOtpExpired) {
+            const otpSignup = generateSignupOtp();
+            const otpSignupExpiry = new Date(Date.now() + 5 * 60 * 1000);
+
+            const updatedUser = await User.findByIdAndUpdate(
+                existedUser._id,
+                { $set: { otpSignup, otpSignupExpiry } },
+                { new: true }
+            );
+
+            await verifySignupMail(
+                updatedUser.fullName,
+                updatedUser.email,
+                updatedUser.otpSignup
+            );
+        } else {
+            await verifySignupMail(
+                existedUser.fullName,
+                existedUser.email,
+                existedUser.otpSignup
+            );
+        }
+        throw new ApiError(
+            401,
+            "your email is not verified. Please check your mail for OTP."
+        );
+    }
+
+    const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
+        existedUser._id
+    );
+
+    const user = await sanitizeUser(existedUser._id);
+    if (!user) throw new ApiError(404, "user not found");
+
+    setAuthCookies(res, accessToken, refreshToken);
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200,
+                { user, accessToken, refreshToken },
+                "user logged in successfully"
+            )
+        );
+});
