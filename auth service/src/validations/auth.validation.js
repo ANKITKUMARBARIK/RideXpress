@@ -58,3 +58,24 @@ export const loginUserSchema = Joi.object({
         "any.required": `"password" is required`,
     }),
 });
+
+export const forgetUserPasswordSchema = Joi.object({
+    email: Joi.string().email().required().messages({
+        "string.empty": `"email" is required`,
+        "string.email": `"email" must be a valid email`,
+    }),
+});
+
+export const resetUserPasswordSchema = Joi.object({
+    newPassword: Joi.string().min(6).required().messages({
+        "string.empty": `"newPassword" is required`,
+        "string.min": `"newPassword" must be at least 6 characters`,
+    }),
+    confirmPassword: Joi.string()
+        .required()
+        .valid(Joi.ref("newPassword"))
+        .messages({
+            "any.only": `"confirmPassword" must match "newPassword"`,
+            "string.empty": `"confirmPassword" is required`,
+        }),
+});
