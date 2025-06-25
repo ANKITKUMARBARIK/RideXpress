@@ -2,11 +2,13 @@ import { Router } from "express";
 import {
     registerUser,
     verifyOtpSignup,
+    resendOtpSignup,
 } from "../controllers/auth.controller.js";
 import validate from "../middlewares/validate.middleware.js";
 import {
     registerUserSchema,
     verifyOtpSignupSchema,
+    resendOtpSignupSchema,
 } from "../validations/auth.validation.js";
 import upload from "../middlewares/multer.middleware.js";
 
@@ -24,5 +26,9 @@ router.route("/register").post(
 router
     .route("/verify-signup")
     .post(validate(verifyOtpSignupSchema), verifyOtpSignup);
+
+router
+    .route("/resend-signup")
+    .post(validate(resendOtpSignupSchema), resendOtpSignup);
 
 export default router;

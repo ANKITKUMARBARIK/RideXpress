@@ -32,3 +32,11 @@ export const verifyOtpSignupSchema = Joi.object({
             "any.required": `"otpSignup" is required`,
         }),
 });
+
+export const resendOtpSignupSchema = Joi.object({
+    email: Joi.string().email().required().messages({
+        "string.email": `"email" must be a valid email`,
+        "string.empty": `"email" is required`,
+        "any.required": `"email" is required`,
+    }),
+});
