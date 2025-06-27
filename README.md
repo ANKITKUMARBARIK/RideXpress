@@ -1,111 +1,112 @@
-# 🚗 RideXpress - Ride Booking Microservices System
+# 🔐 AuthMicroservices_Gateway
 
-RideXpress is a fully containerized, production-ready ride-booking backend inspired by Uber. Built using **Node.js**, **Express**, **MongoDB**, **PostgreSQL**, **Redis**, **RabbitMQ**, and **Docker**, this system follows a **Microservices Architecture** ensuring scalability, resilience, and decoupled services.
+A professional and scalable microservices-based authentication system using **Node.js**, **Express**, and **API Gateway** architecture.
 
----
+## 🚀 Project Overview
 
-## 🧩 Services & Ports
-
-| Service        | Port  | Description                    |
-|----------------|-------|--------------------------------|
-| API Gateway    | 5000  | Entry point for all requests   |
-| Auth Service   | 5001  | User login & JWT auth          |
-| User Service   | 5002  | User profile & data            |
-| Captain Service| 5003  | Driver onboarding & status     |
-| Ride Service   | 5004  | Booking, matching & history    |
+This project demonstrates how to structure authentication functionality within a microservices architecture. It includes:
+- 🧩 **Auth Service**: Handles user authentication, registration, OTP verification, password resets, and token refresh logic.
+- 🌐 **API Gateway**: Acts as a single entry point that proxies requests to internal microservices.
 
 ---
 
-## ⚙️ Tech Stack
-
-- **Node.js + Express** – Backend framework
-- **MongoDB** – NoSQL database (for flexible services)
-- **PostgreSQL** – Relational DB (for structured data)
-- **Redis** – In-memory caching & session management
-- **RabbitMQ** – Messaging system for async communication 🐇
-- **Docker** – Containerization of all services 🐳
+## 🛠️ Technologies Used
+- Node.js
+- Express.js
+- express-http-proxy
+- JSON Web Token (JWT)
+- UUID / Nanoid for unique IDs
+- Environment variables using dotenv
 
 ---
 
-## 📦 Microservices Architecture
-
-Each service is independently containerized and communicates via **REST APIs** and **RabbitMQ events**.
+## 📁 Project Structure
 
 ```
-[Client] --> [API Gateway (5000)] --> [Service (Auth/User/Ride/etc)]
-```
-
-- Services have isolated DBs (Mongo/Postgres depending on the use case).
-- All internal communication between services can be event-driven using RabbitMQ.
-
----
-
-## 🐳 Dockerized Setup
-
-Use Docker Compose to bring up the full system:
-
-```bash
-docker-compose up --build
-```
-
-- Make sure Docker & Docker Compose are installed.
-- Environment variables are set in `.env` files for each service.
-
----
-
-## 🛡️ Security
-
-- JWT-based Authentication system
-- Role-based access for **users** and **captains**
-- Rate-limiting and helmet for basic security
-
----
-
-## 📂 Folder Structure (Sample)
-
-```
-RideXpress/
+AuthMicroservices_Gateway/
 │
-├── gateway/
-├── auth-service/
-├── user-service/
-├── captain-service/
-├── ride-service/
-├── docker-compose.yml
-├── README.md
+├── api-gateway/               # API Gateway - handles routing & proxying
+│   └── index.js
+│
+├── auth-service/              # Authentication microservice
+│   ├── controllers/
+│   ├── routes/
+│   ├── utils/
+│   └── index.js
+│
+├── .env                       # Environment variables
+└── README.md                  # Project overview & instructions
 ```
 
 ---
 
-## ✨ Features
+## ⚙️ Features
 
-- 🧑‍💼 User SignUp / Login / JWT Tokens
-- 🚖 Captain availability & live tracking
-- 📍 Ride booking, cancellation, and history
-- 📨 Event-driven communication with RabbitMQ
-- 💾 Mongo + Postgres dual DB setup
-- ♻️ Redis integration for caching/session
-
----
-
-## 🧪 Upcoming Enhancements
-
-- 🚦 Real-time location updates via WebSocket
-- 💳 Payment integration (Stripe/Razorpay)
-- 📊 Admin panel for ride & user analytics
+- ✅ User Registration
+- ✅ Login / Logout
+- ✅ Refresh Token system
+- ✅ OTP verification & Resend OTP
+- ✅ Forgot / Reset Password
+- ✅ API Gateway Routing
+- ✅ Middleware based token verification
 
 ---
 
-## 🤝 Contributing
+## 📦 Installation & Setup
 
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+1. Clone the repository:
+```bash
+git clone https://github.com/ANKITKUMARBARIK/AuthMicroservices_Gateway.git
+cd AuthMicroservices_Gateway
+```
+
+2. Install dependencies in each service folder:
+```bash
+cd auth-service
+npm install
+
+cd ../api-gateway
+npm install
+```
+
+3. Start services:
+```bash
+# In one terminal (Auth Service)
+cd auth-service
+npm run dev
+
+# In another terminal (API Gateway)
+cd api-gateway
+npm run dev
+```
 
 ---
 
-## 📜 License
+## 📌 Endpoints Overview
 
-This project is licensed under the GNU License.
+| Method | Endpoint                   | Description            |
+|--------|----------------------------|------------------------|
+| POST   | /register                  | Register user          |
+| POST   | /login                     | Login user             |
+| POST   | /logout                    | Logout user            |
+| POST   | /refresh-token             | Refresh JWT            |
+| POST   | /verify-signup             | Verify OTP             |
+| POST   | /resend-otp                | Resend OTP             |
+| POST   | /forgot-password           | Forgot password        |
+| POST   | /reset-password            | Reset password         |
 
 ---
 
-> Made with ❤️ by ankit
+## 🔮 Future Improvements
+
+- 🔐 Role-based access control
+- 🐳 Docker support for containers
+- 📡 Use Redis for session/token management
+- 📃 Swagger API documentation
+
+---
+
+## 🙌 Author
+
+Made with ❤️ by **ankit**  
+Feel free to connect for suggestions or collaboration!
